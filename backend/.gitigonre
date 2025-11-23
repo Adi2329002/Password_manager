@@ -1,0 +1,24 @@
+Dependencies
+
+node_modules/
+venv/
+target/
+
+Python
+
+pycache/
+*.pyc
+
+Database (Don't upload local DBs)
+
+*.sqlite3
+db.sqlite3
+
+Build Outputs
+
+dist/
+pkg/
+
+System
+
+.DS_Store

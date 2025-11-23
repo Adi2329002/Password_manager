@@ -1,0 +1,38 @@
+databases:
+  - name: vault_db
+    databaseName: passmanager
+    user: myuser
+    plan: free # This gives you 90 days of free persistent storage!
+
+services:
+  # 1. THE BACKEND (Django)
+  - type: web
+    name: zero-vault-backend
+    runtime: docker
+    # Context '.' means look in root folder so we can find manage.py
+    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vault_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # 2. THE FRONTEND (React + Rust)
+  - type: web
+    name: zero-vault-frontend
+    runtime: docker
+    dockerContext: .
+    dockerfilePath: frontend/Dockerfile
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: zero-vault-backend
+          property: url
